@@ -18,12 +18,10 @@ import static com.casper.sdk.helper.CasperDeployHelper.buildDeployHeader;
  */
 public class DeployHeaderHelper {
 
-    private final DeployHeader deployHeader;
-
-    public DeployHeaderHelper(final Deploy deploy) {
+    public static DeployHeader buildHeader(final Deploy deploy) {
 
         try {
-            deployHeader = buildDeployHeader(
+            return buildDeployHeader(
                     PublicKey.fromAbstractPublicKey(deploy.getHeader().getAccount().getPubKey()),
                     deploy.getHeader().getChainName(),
                     deploy.getHeader().getGasPrice(),
@@ -37,7 +35,4 @@ public class DeployHeaderHelper {
         }
     }
 
-    public DeployHeader getDeployHeader() {
-        return deployHeader;
-    }
 }

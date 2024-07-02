@@ -27,24 +27,30 @@ public class DeployVerifier {
     public void verifyDeploy(final Deploy jsonDeploy) throws GeneralSecurityException {
         assert jsonDeploy != null: "Deploy cannot be null";
 
-        var deploy = new DeployHeaderHelper(jsonDeploy);
+        var deployHeader = DeployHeaderHelper.buildHeader(jsonDeploy);
 
-        verifyDeployHeader(jsonDeploy.getHeader().getBodyHash(), deploy.getDeployHeader());
         verifyDeploySignature(jsonDeploy);
 
-        var deployHash = toDigest(deployBodyByteSerializer.toBytes(deploy.getDeployHeader()));
+        verifyDeployBodyHash(jsonDeploy.getHeader().getBodyHash(), deployHeader);
 
-        if (!deployHash.equals(jsonDeploy.getHash())) {
+        verifyDeployHeaderHash(jsonDeploy.getHash(), deployHeader);
+
+    }
+
+    private void verifyDeployHeaderHash(final Digest expectedBodyHash, final DeployHeader deployHeader){
+        var deployHash = toDigest(deployBodyByteSerializer.toBytes(deployHeader));
+
+        if (!deployHash.equals(expectedBodyHash)) {
             throw new DeployVerificationException(
                     "Deploy hash does not match expected hash \nExpected: "
                             + deployHash
                             + "\nActual: "
-                            +  jsonDeploy.getHash()
+                            +  expectedBodyHash
             );
         }
     }
 
-    private void verifyDeployHeader(final Digest expectedBodyHash, final DeployHeader deployHeader) {
+    private void verifyDeployBodyHash(final Digest expectedBodyHash, final DeployHeader deployHeader) {
 
         if (!deployHeader.getBodyHash().equals(expectedBodyHash)) {
             throw new DeployVerificationException(
@@ -69,4 +75,5 @@ public class DeployVerifier {
     private Digest toDigest(final byte[] bytes) {
         return Digest.digestFromBytes(Blake2b.digest(bytes, 32));
     }
+
 }

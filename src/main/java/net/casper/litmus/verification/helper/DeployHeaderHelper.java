@@ -18,7 +18,7 @@ import static com.casper.sdk.helper.CasperDeployHelper.buildDeployHeader;
  */
 public class DeployHeaderHelper {
 
-    public static DeployHeader buildHeader(final Deploy deploy) {
+    public static DeployHeader cloneHeader(final Deploy deploy) {
 
         try {
             return buildDeployHeader(

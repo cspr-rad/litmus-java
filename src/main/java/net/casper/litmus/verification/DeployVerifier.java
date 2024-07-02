@@ -27,7 +27,7 @@ public class DeployVerifier {
     public void verifyDeploy(final Deploy jsonDeploy) throws GeneralSecurityException {
         assert jsonDeploy != null: "Deploy cannot be null";
 
-        var deployHeader = DeployHeaderHelper.buildHeader(jsonDeploy);
+        var deployHeader = DeployHeaderHelper.cloneHeader(jsonDeploy);
 
         verifyDeploySignature(jsonDeploy);
 
